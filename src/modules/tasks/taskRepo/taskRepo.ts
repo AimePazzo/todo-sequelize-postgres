@@ -1,48 +1,79 @@
-import database from '../../../database/config/dbConnection';
+import db from '../../../database/models/index';
 
+const { Tasks,Users } = db;
 
-const getTasks = async () => {
-    const tasks = await database.query(`
-    SELECT t.id,t.title,t.createdAt, t.updatedAt,
-            (SELECT ROW_TO_JSON(user_obj) FROM(
-            SELECT id,name FROM users WHERE id = t.user_id
-            )user_obj) AS user
-    FROM  tasks t`)
-    return tasks.rows;
-}
-
-const createTask = async (body:any) => {
-    const task =  await database.query({
-        text: 'INSERT INTO tasks (title,user_id) VALUES ($1,$2) RETURNING *',
-        values: [body.title,body.userId]
-    })
-    return task.rows[0];
-}
-
-const deleteTask = async (body:any) => {
-    const task =  await database.query({
-        text: 'DELETE FROM tasks t WHERE t.id = $1 AND t.user_id = $2  RETURNING *',
-        values: [body.taskId, body.userId]
-    })
-    return task.rows[0];
+const getAllTasks = async () => {
+    const tasks = await Tasks.findAll({
+        include: [
+            {
+                model: Users,
+                as: 'user',
+                attributes: ['id', 'username', 'email'],
+            },
+        ],
+    });
+    return tasks;
 };
 
-const updateTask = async (body:any) => {
-    const task =  await database.query({
-        text: 'UPDATE tasks t SET title = $1 WHERE t.id = $2 AND t.user_id = $3 RETURNING *',
-        values: [body.title, body.taskId, body.userId]
-    })
-    return task.rows[0];
-}
+const createTask = async (body: any) => {
+    const task = await Tasks.create({
+        title: body.title,
+        user_id: body.userId,
+    });
+    const taskWithUser = await Tasks.findOne({
+        where: { id: task.id },
+        include: [
+            {
+                model: Users,
+                as: 'user',
+                attributes: ['id', 'username', 'email'],
+            },
+        ],
+    });
+
+    return taskWithUser;
+};
+
+const deleteTask = async (body:any) => {
+    const task =  await Tasks.destroy({where: {id: body.taskId, user_id: body.userId}})
+    return task;
+};
+
+const updateTask = async (body: any) => {
+    await Tasks.update(
+        { title: body.title },  
+        {
+            where: { id: body.taskId, user_id: body.userId },
+            returning: true,  
+            plain: true,    
+        }
+    );
+    const updatedTask = await Tasks.findOne({
+        where: { id: body.taskId },
+        include: [
+            {
+                model: Users,
+                as: 'user',
+                attributes: ['id', 'username', 'email'],
+            },
+        ],
+    });
+
+    return updatedTask;
+};
 
 const getTaskByUserId = async (userId:any) => {
-    const tasks = await database.query(`
-    SELECT t.id,t.title,t.createdAt, t.updatedAt,
-            (SELECT ROW_TO_JSON(user_obj) FROM(
-            SELECT id,name,email FROM users WHERE id = t.user_id
-            )user_obj) AS user
-    FROM  tasks t WHERE t.user_id = $1`, [userId])
-    return tasks.rows;
+    const task = await Tasks.findAll({
+        where: { user_id: userId },
+        include: [
+            {
+                model: Users,
+                as: 'user',
+                attributes: ['id', 'username', 'email'],  
+            },
+        ],
+    });
+    return task;
 }
 
-export default { getTasks, createTask, deleteTask, updateTask,getTaskByUserId}
+export default { getAllTasks, createTask, deleteTask, updateTask,getTaskByUserId}

@@ -1,47 +1,41 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 
-interface UsersAttributes {
+interface TasksAttributes {
     id: number;
-    username: string;
-    email: string;
-    password: string;
+    title: string;
+    user_id: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
 module.exports = (sequelize: Sequelize) => {
-    class Users extends Model<UsersAttributes> implements UsersAttributes {
+    class Tasks extends Model<TasksAttributes> implements TasksAttributes {
         declare id: number;
-        declare username: string;
-        declare email: string;
-        declare password: string;
+        declare title: string;
+        declare user_id: string;
         declare createdAt: Date;
         declare updatedAt: Date;
 
         // Define any static methods or associations here
         static associate(models: any) {
-            Users.hasMany(models.Tasks, { foreignKey: 'user_id' });
+            Tasks.belongsTo(models.Users, { foreignKey: 'user_id' ,as: 'user' });
         //     Users.hasMany(models.Buses, { foreignKey: 'driver_id' });
         }
     }
 
-    Users.init(
+    Tasks.init(
         {
             id: {
                 type: DataTypes.INTEGER,
                 autoIncrement: true,
                 primaryKey: true,
             },
-            username: {
+            title: {
                 type: new DataTypes.STRING(50),
                 allowNull: false,
             },
-            email: {
-                type: new DataTypes.STRING(50),
-                allowNull: false,
-            },
-            password: {
-                type: new DataTypes.STRING(50),
+            user_id: {
+                type: new DataTypes.INTEGER,
                 allowNull: false,
             },
             createdAt: {
@@ -59,10 +53,10 @@ module.exports = (sequelize: Sequelize) => {
         },
         {
             sequelize,
-            tableName: 'users',
+            tableName: 'tasks',
             timestamps: true,
         }
     );
 
-    return Users;
+    return Tasks;
 };

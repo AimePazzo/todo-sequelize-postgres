@@ -4,8 +4,8 @@ import { authenticateToken } from '../middleware/authMiddleware';
 const taskRouter = express.Router();
 
 taskRouter.get('/', taskController.getTasks);
-taskRouter.get('/task',authenticateToken, taskController.getTaskByUser)
-taskRouter.post('/addtask',authenticateToken,taskController.createTask)
-taskRouter.put('/updatetask/:id',authenticateToken,taskController.updateTask)
-taskRouter.delete('/deletetask/:id',authenticateToken,taskController.deleteTask)
+taskRouter.get('/get-todo',authenticateToken, taskController.getTaskByUser)
+taskRouter.post('/create-todo',authenticateToken,taskController.createTask)
+taskRouter.put('/update-todo/:id',authenticateToken,taskController.updateTask)
+taskRouter.delete('/delete-todo/:id',authenticateToken,taskController.deleteTask)
 export default taskRouter;

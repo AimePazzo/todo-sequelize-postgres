@@ -18,12 +18,9 @@ const createUser = async (body: any) => {
         throw error;
     }
 };
-// const getUserByEmail = async(email:string) => {
-//     const user = await database.query({
-//         text:'SELECT * FROM users WHERE email = $1',
-//         values: [email]
-//     })
-//     return user.rows;
-// }
+const getUserByEmail = async(email:string) => {
+    const user = await Users.findOne({where: { email }});
+    return user;
+}
 
-export default {createUser,getUsers}
+export default {createUser,getUsers,getUserByEmail}

@@ -6,7 +6,7 @@ interface ExtendedRequest extends Request {
     userId?: string;
   }
 const getTasks = async(req:Request, res:Response):Promise<void> => {
-    const tasks = await taskRepo.getTasks();
+    const tasks = await taskRepo.getAllTasks();
     res.status(200).json(tasks);
 }
 
@@ -20,8 +20,8 @@ const createTask = async(req:ExtendedRequest, res:Response):Promise<void> => {
 const deleteTask = async(req:ExtendedRequest, res:Response):Promise<void> => {
     const userId = req.userId;
     const taskId = req.params.id;
-    const deletedTask = await taskRepo.deleteTask({userId, taskId});
-    res.status(200).json(deletedTask);
+    await taskRepo.deleteTask({userId, taskId});
+    res.status(200).json({message: 'Task deleted successfully'});
 }
 
 const updateTask = async(req:ExtendedRequest, res:Response):Promise<void> => {

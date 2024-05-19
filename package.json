@@ -6,6 +6,7 @@
   "scripts": {
     "createAllTables": "tsc && npx sequelize db:migrate",
     "createAllSeeds": "tsc && npx sequelize db:seed:all",
+    "deleteAllTables": "tsc && npx sequelize db:migrate:undo:all",
     "dev": "ts-node-dev index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
