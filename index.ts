@@ -2,7 +2,6 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import router from './src/routers';
-import db from './src/database/models/index';  // Import your database module
 
 const app = express();
 
@@ -21,8 +20,6 @@ app.get('/', (req, res) => {
 // Synchronize the database and start the server
 const startServer = async () => {
   try {
-    await db.sequelize.sync();
-    console.log('Database synchronized');
 
     app.listen(4000, () => {
       console.log('Server is running on http://localhost:4000 👻!');

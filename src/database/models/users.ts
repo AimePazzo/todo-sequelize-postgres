@@ -60,6 +60,7 @@ module.exports = (sequelize: Sequelize) => {
         {
             sequelize,
             tableName: 'users',
+            modelName:'users',
             timestamps: true,
         }
     );

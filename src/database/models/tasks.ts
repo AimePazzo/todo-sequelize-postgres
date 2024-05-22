@@ -18,7 +18,7 @@ module.exports = (sequelize: Sequelize) => {
 
         // Define any static methods or associations here
         static associate(models: any) {
-            Tasks.belongsTo(models.Users, { foreignKey: 'user_id' ,as: 'user' });
+            Tasks.belongsTo(models.users, { foreignKey: 'user_id' ,as: 'user' });
         //     Users.hasMany(models.Buses, { foreignKey: 'driver_id' });
         }
     }
@@ -54,6 +54,7 @@ module.exports = (sequelize: Sequelize) => {
         {
             sequelize,
             tableName: 'tasks',
+            modelName:'Tasks',
             timestamps: true,
         }
     );

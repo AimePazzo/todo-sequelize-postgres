@@ -1,17 +1,17 @@
 import db from '../../../database/models/index';
 
-const { Users } = db;
+const { users } = db;
 
 const getUsers = async() => {
-    const users = await Users.findAll();
-    return users;
+    const user = await users.findAll();
+    return user;
 }
 
 
 
 const createUser = async (body: any) => {
     try {
-        const user = await Users.create(body);
+        const user = await users.create(body);
         return user;
     } catch (error) {
         console.error('Error creating user:', error);
@@ -19,7 +19,7 @@ const createUser = async (body: any) => {
     }
 };
 const getUserByEmail = async(email:string) => {
-    const user = await Users.findOne({where: { email }});
+    const user = await users.findOne({where: { email }});
     return user;
 }
 
