@@ -1,45 +1,30 @@
-import dotenv from 'dotenv'
+const dotenv = require('dotenv')
+
 dotenv.config()
-module.exports = {
-    test: {
-        // logging: false,
-        // dialect: 'postgres',
-        // url: process.env.DATABASE_URL_TEST,
 
-        logging: false,
-        dialect: 'postgres',
-        port: process.env.DATABASE_PORT,
-        host:  process.env.DATABASE_HOST,
-        database:  process.env.DATABASE_NAME,
-        username:  process.env.DATABASE_USERNAME,
-        password:  process.env.DATABASE_PASSWORD,
+const commonDatabaseConfig = {
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
     },
-
-    development: {
-        // logging: false,
-        // dialect: 'postgres',
-        // url: process.env.DATABASE_URL,
-
-        logging: false,
-        dialect: 'postgres',
-        port: process.env.DATABASE_PORT,
-        host:  process.env.DATABASE_HOST,
-        database:  process.env.DATABASE_NAME,
-        username:  process.env.DATABASE_USERNAME,
-        password:  process.env.DATABASE_PASSWORD,
-    },
-
-    production: {
-        // logging: false,
-        // dialect: 'postgres',
-        //url: process.env.DATABASE_URL,
-
-        logging: false,
-        dialect: 'postgres',
-        port: process.env.DATABASE_PORT,
-        host:  process.env.DATABASE_HOST,
-        database:  process.env.DATABASE_NAME,
-        username:  process.env.DATABASE_USERNAME,
-        password:  process.env.DATABASE_PASSWORD,
-    }
+  },
 }
+
+const sequelizeConfig = {
+  development: {
+    ...commonDatabaseConfig,
+    url: process.env.DEV_DATABASE_URL,
+  },
+  test: {
+    ...commonDatabaseConfig,
+    url: process.env.TEST_DATABASE_URL,
+  },
+  production: {
+    ...commonDatabaseConfig,
+    url: process.env.PROD_DATABASE_URL,
+  },
+}
+
+module.exports = sequelizeConfig

@@ -11,9 +11,11 @@ const getTasks = async(req:Request, res:Response):Promise<void> => {
 }
 
 const createTask = async(req:ExtendedRequest, res:Response):Promise<void> => {
-    const userId = req.userId;
-    const title = req.body.title;
-    const newTask = await taskRepo.createTask({userId, title});
+    const taskData ={
+        userId : req.userId,
+        title : req.body.title
+    }
+    const newTask = await taskRepo.createTask(taskData);
     res.status(201).json(newTask);
 }
 

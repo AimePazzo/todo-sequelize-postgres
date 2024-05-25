@@ -1,18 +1,17 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
-
+import { Model, DataTypes } from 'sequelize';
+import sequelizeConnection from '../config/dbConnection'
 interface TasksAttributes {
     id: number;
     title: string;
-    user_id: string;
+    user_id: number;
     createdAt: Date;
     updatedAt: Date;
 }
 
-module.exports = (sequelize: Sequelize) => {
     class Tasks extends Model<TasksAttributes> implements TasksAttributes {
         declare id: number;
         declare title: string;
-        declare user_id: string;
+        declare user_id: number;
         declare createdAt: Date;
         declare updatedAt: Date;
 
@@ -52,12 +51,11 @@ module.exports = (sequelize: Sequelize) => {
             }
         },
         {
-            sequelize,
+            sequelize: sequelizeConnection,
             tableName: 'tasks',
             modelName:'Tasks',
             timestamps: true,
         }
     );
 
-    return Tasks;
-};
+export default Tasks;

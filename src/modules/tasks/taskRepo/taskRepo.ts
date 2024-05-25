@@ -1,7 +1,5 @@
-import db from '../../../database/models/index';
-
-const { Tasks,Users } = db;
-
+import Tasks from "../../../database/models/tasks";
+import Users from "../../../database/models/users";
 const getAllTasks = async () => {
     const tasks = await Tasks.findAll({
         include: [
@@ -15,11 +13,8 @@ const getAllTasks = async () => {
     return tasks;
 };
 
-const createTask = async (body: any) => {
-    const task = await Tasks.create({
-        title: body.title,
-        user_id: body.userId,
-    });
+const createTask = async (body:any) => {
+    const task = await Tasks.create(body)
     const taskWithUser = await Tasks.findOne({
         where: { id: task.id },
         include: [
@@ -45,7 +40,6 @@ const updateTask = async (body: any) => {
         {
             where: { id: body.taskId, user_id: body.userId },
             returning: true,  
-            plain: true,    
         }
     );
     const updatedTask = await Tasks.findOne({

@@ -1,11 +1,43 @@
-import { Pool } from 'pg'
+import { config } from 'dotenv'
+import { Sequelize } from 'sequelize'
 
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'todo',
-    password: 'Pazzo@2001',
-    port: 5432,
-})   
+config()
+const NODE_ENV: string = 'development'
+const DB_HOST_MODE: string = process.env.DB_HOST_TYPE as string
 
-export default pool;
+/**
+ * Get the URI for the database connection.
+ * @returns {string} The URI string.
+ */
+function getDbUri(): string {
+  switch (NODE_ENV) {
+    case 'test':
+      return process.env.TEST_DATABASE_URL as string
+    case 'production':
+      return process.env.PROD_DATABASE_URL as string
+    default:
+      return process.env.DEV_DATABASE_URL as string
+  }
+}
+
+/**
+ * Get dialect options for Sequelize.
+ * @returns {DialectOptions} The dialect options.
+ */
+function getDialectOptions() {
+  return DB_HOST_MODE === 'local'
+    ? {}
+    : {
+        ssl: {
+          require: true,
+          rejectUnauthorized: true,
+        },
+      }
+}
+
+const sequelizeConnection: Sequelize = new Sequelize(getDbUri(), {
+  dialect: 'postgres',
+  dialectOptions: getDialectOptions(),
+  logging: false,
+})
+export default sequelizeConnection

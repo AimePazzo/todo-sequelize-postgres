@@ -1,5 +1,5 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
-
+import sequelizeConnection from '../config/dbConnection'
 interface UsersAttributes {
     id: number;
     username: string;
@@ -9,7 +9,6 @@ interface UsersAttributes {
     updatedAt: Date;
 }
 
-module.exports = (sequelize: Sequelize) => {
     class Users extends Model<UsersAttributes> implements UsersAttributes {
         declare id: number;
         declare username: string;
@@ -58,12 +57,10 @@ module.exports = (sequelize: Sequelize) => {
             }
         },
         {
-            sequelize,
+            sequelize: sequelizeConnection,
             tableName: 'users',
-            modelName:'users',
+            modelName:'Users',
             timestamps: true,
         }
     );
-
-    return Users;
-};
+export default Users;
