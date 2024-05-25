@@ -2,8 +2,8 @@ import { config } from 'dotenv'
 import { Sequelize } from 'sequelize'
 
 config()
-const NODE_ENV: string = 'development'
-const DB_HOST_MODE: string = process.env.DB_HOST_TYPE as string
+const NODE_ENV: string = process.env.NODE_ENV || 'development'
+const DB_HOST_MODE: string = process.env.DB_HOST_TYPE || 'remote'
 
 /**
  * Get the URI for the database connection.
@@ -30,7 +30,7 @@ function getDialectOptions() {
     : {
         ssl: {
           require: true,
-          rejectUnauthorized: true,
+          rejectUnauthorized: false,
         },
       }
 }
@@ -40,4 +40,5 @@ const sequelizeConnection: Sequelize = new Sequelize(getDbUri(), {
   dialectOptions: getDialectOptions(),
   logging: false,
 })
+
 export default sequelizeConnection
